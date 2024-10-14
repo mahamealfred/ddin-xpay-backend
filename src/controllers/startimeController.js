@@ -14,7 +14,7 @@ class StartimeController {
 
   static async  ddinStartimePayment(req,res){
     
-    const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber } = req.body;
+    const { amount, trxId,transferTypeId, toMemberId,clientPhone, description, currencySymbol, phoneNumber } = req.body;
     const authheader = req.headers.authorization;
     const authHeaderValue = authheader.split(' ')[1];
        const decodedValue = Buffer.from(authHeaderValue, 'base64').toString('ascii');
@@ -35,6 +35,11 @@ class StartimeController {
           "internalName" : "net_amount",
           "fieldId" : "87",
           "value" : amount
+          },
+          {
+            "internalName" : "clientphone",
+            "fieldId" : "90",
+            "value" : clientPhone
           }
         
         ]
@@ -56,7 +61,7 @@ class StartimeController {
       const response = await axios.request(config);
       if (response.status === 200){
        //call third part
-       await ddinStartimePaymentService(req, res, response, amount, description, trxId,phoneNumber,service_name,agent_name)
+       await ddinStartimePaymentService(req, res, response, amount, description, trxId,phoneNumber,clientPhone,service_name,agent_name)
       }
     } catch (error) {
       

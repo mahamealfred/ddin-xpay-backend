@@ -22,6 +22,7 @@ const CheckAccountStatus = async (req, res, next) => {
                      });
                
            } catch (error) {
+            
                if(error.response.status===401){
                    return res.status(401).json({
                        responseCode: 401,

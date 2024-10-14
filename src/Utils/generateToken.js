@@ -29,6 +29,7 @@ const generateAccessToken = async(req,res)=>{
        
       })
       .catch((error) => {
+        console.log("error::",error)
         return JSON.stringify({
             responseCodeCode:error.response.status,
             communicationStatus:"FAILED",

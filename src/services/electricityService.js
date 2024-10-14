@@ -8,7 +8,7 @@ const callPollEndpoint = require("../Utils/checkEfasheTransactionStatus.js");
 dotenv.config();
 //new methode
 const ddinElectricityPaymentServiceNewMethod = async (
-  req, res, resp, amount, toMemberId, trxId, phoneNumber, transferTypeId, currencySymbol, description, agent_name, service_name
+  req, res, resp, amount, toMemberId, trxId, phoneNumber,clientPhone, transferTypeId, currencySymbol, description, agent_name, service_name
 ) => {
   const authheader = req.headers.authorization;
   let status = "Incomplete";
@@ -37,6 +37,11 @@ const ddinElectricityPaymentServiceNewMethod = async (
           "internalName" : "net_amount",
           "fieldId" : "87",
           "value" : amount
+        },
+        {
+          "internalName" : "clientphone",
+          "fieldId" : "90",
+          "value" : clientPhone
         }
        ]
 

@@ -23,8 +23,11 @@ class authController{
                     }
                     else if(account.account.type.name === "Agent Float A/C"){
                         agentFloatAccountId=(account.account.id).toString()
-                    }else{
+                    }else if(account.account.type.name === "Agent Instant Commission A/C"){
                         agentInstantCommissionAccountId=(account.account.id).toString()
+                    }
+                    else{
+                        return;
                     }
                 });
                 let phone=""

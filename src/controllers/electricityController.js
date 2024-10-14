@@ -14,7 +14,7 @@ dotenv.config();
 class electricityController{
 //new methode
 static async ddinElectricityPaymentNewMethode(req,res){
-  const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber } = req.body;
+  const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber,clientPhone } = req.body;
     const authheader = req.headers.authorization;
     const authHeaderValue = authheader.split(' ')[1];
        const decodedValue = Buffer.from(authHeaderValue, 'base64').toString('ascii');
@@ -57,7 +57,7 @@ static async ddinElectricityPaymentNewMethode(req,res){
       let status = "Incomplete"
 
       // logsData(transactionId, thirdpart_status, description, amount, agent_name, status, service_name, trxId)
-      ddinElectricityPaymentServiceNewMethod(req,res,resp,amount,toMemberId,trxId,phoneNumber,transferTypeId,currencySymbol,description,agent_name,service_name)
+      ddinElectricityPaymentServiceNewMethod(req,res,resp,amount,toMemberId,trxId,phoneNumber,clientPhone,transferTypeId,currencySymbol,description,agent_name,service_name)
       
     }
 

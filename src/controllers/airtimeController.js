@@ -14,7 +14,7 @@ class AirtimeController {
 
 
   static async  ddinAirtimePayment(req,res){
-    const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber } = req.body;
+    const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber,clientPhone } = req.body;
     const authheader = req.headers.authorization;
     const authHeaderValue = authheader.split(' ')[1];
        const decodedValue = Buffer.from(authHeaderValue, 'base64').toString('ascii');
@@ -35,6 +35,11 @@ class AirtimeController {
         "internalName" : "net_amount",
         "fieldId" : "87",
         "value" : amount
+      },
+      {
+        "internalName" : "clientphone",
+        "fieldId" : "90",
+        "value" : clientPhone
       }
     ]
       
@@ -68,12 +73,12 @@ class AirtimeController {
         });
       }
       if (error.response.status === 400) {
-       
+        console.log("dtaat..",error.response)
  
         return res.status(400).json({
           responseCode: 400,
           communicationStatus: "FAILED",
-          responseDescription: "Invalid Username or Password "
+          responseDescription: "Invalid Username or Password"
         });
       }
       if (error.response.status === 404) {
@@ -94,7 +99,7 @@ class AirtimeController {
  
 // Bulk Airtime service
 static async ddinBulkAirtimePayment(req, res) {
-  const { transferTypeId, toMemberId, currencySymbol, details } = req.body;
+  const { transferTypeId, toMemberId, currencySymbol,clientPhone, details } = req.body;
   const authheader = req.headers.authorization;
   const authHeaderValue = authheader.split(' ')[1];
   const decodedValue = Buffer.from(authHeaderValue, 'base64').toString('ascii');
@@ -123,6 +128,11 @@ static async ddinBulkAirtimePayment(req, res) {
           "internalName": "net_amount",
           "fieldId": "87",
           "value": detail.amount
+        },
+        {
+          "internalName" : "clientphone",
+          "fieldId" : "90",
+          "value" : clientPhone
         }
       ]
     });

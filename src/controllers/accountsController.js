@@ -105,7 +105,9 @@ static async getAccountsBalanceByID(req, res) {
           
         
     } catch (error) {
+      console.log("e:",error)
         if(error.response.status===401){
+        
             return res.status(401).json({
                 responseCode: 401,
                 communicationStatus:"FAILED",
