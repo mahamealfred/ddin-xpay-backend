@@ -73,7 +73,6 @@ class AirtimeController {
         });
       }
       if (error.response.status === 400) {
-        console.log("dtaat..",error.response)
  
         return res.status(400).json({
           responseCode: 400,

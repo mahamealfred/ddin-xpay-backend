@@ -88,7 +88,7 @@ static async ddinElectricityPaymentNewMethode(req,res){
 
   //previous methode
 static async ddinElectricityPayment(req,res){
-  const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber } = req.body;
+  const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber,clientPhone  } = req.body;
     const authheader = req.headers.authorization;
     const authHeaderValue = authheader.split(' ')[1];
        const decodedValue = Buffer.from(authHeaderValue, 'base64').toString('ascii');
@@ -99,7 +99,30 @@ static async ddinElectricityPayment(req,res){
       "amount": `${amount}`,
       "transferTypeId": `${transferTypeId}`,
       "currencySymbol": currencySymbol,
-      "description": description
+      "description": description,
+      "customValues": [
+      {
+      "internalName" : "meterNumber",
+      "fieldId" : "86",
+      "value" :phoneNumber 
+       },
+      {
+     "internalName" : "trans_id",
+     "fieldId" : "85",
+     "value" : trxId
+      },
+      {
+        "internalName" : "net_amount",
+        "fieldId" : "87",
+        "value" : amount
+      },
+      {
+        "internalName" : "clientphone",
+        "fieldId" : "90",
+        "value" : clientPhone
+      }
+     ]
+
   
     });
   
