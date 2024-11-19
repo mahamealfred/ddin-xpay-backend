@@ -163,8 +163,8 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
   try {
     const resp = await axios.request(config);
     if (resp.status === 202) {
-      let transactionId = resp.data.id;
-      let id= resp.data.id;
+      let transactionId = response.data.id;
+      let id= response.data.id;
       let status = "Incomplete";
       while (true) {
         const responseData = await callPollEndpoint(resp, trxId);
@@ -172,9 +172,9 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
         if (thirdpart_status === "successful") {
           status = "Complete";
           logsData(transactionId, thirdpart_status, description, amount, agent_name, status, service_name, trxId);
-          
+          let desc=description+""+responseData.data.data.spVendInfo.voucher;
           // Update the electricity table with the transactionId and description
-          const updateResult = await updateElectricityTable( description, id);
+          const updateResult = await updateElectricityTable(desc , id);
           
           // Check if the update was successful before returning the success response
           if (updateResult) {
@@ -183,7 +183,7 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
               communicationStatus: "SUCCESS",
               responseDescription: description,
               data: {
-                transactionId: resp.data.id,
+                transactionId: response.data.id,
                 amount: amount,
                 description: description,
                 spVendInfo: responseData.data.data.spVendInfo
@@ -236,7 +236,7 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
 const updateElectricityTable = async ( description, id) => {
   // Replace with your database connection logic
   //const query = `UPDATE electricity SET transactionId = ?, description = ? WHERE trxId = ?`;
-  const query=`UPDATE transfers SET description= ? WHERE id= ?`;
+  const query='UPDATE transfers SET description= ? WHERE id= ?';
   try {
     const [result] = await dbConnect.query(query, [ description, id]);
     return result.affectedRows > 0; // Return true if the update was successful
@@ -245,6 +245,8 @@ const updateElectricityTable = async ( description, id) => {
     return false; // Return false if the update failed
   }
 };
+
+
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 module.exports = ddinElectricityPaymentService 

@@ -16,6 +16,11 @@ const db_port=process.env.DB_PORT;
       port:"3306",
       password:"DDIN@Norrsken#23",
       database:"ddin_core_db",
+      // host:host,
+      // user:username,
+      // port:db_port,
+      // password:password,
+      // database:db_name,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0
