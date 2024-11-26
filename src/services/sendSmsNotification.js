@@ -38,7 +38,7 @@ const auth = 'Basic ' + Buffer.from(username + ':' + password).toString('base64'
     try {
       const response = await axios.request(config)
       if (response.status === 200){
-        console.log("Success for sms:",response)
+       
       //call send notification 
       sendSmsNotification(req,res)
     }
@@ -54,7 +54,7 @@ const sendSmsNotification= async (req,res) => {
     const {address,firstName}=req.body
 let smsMessage=`Dear ${firstName}, your EpoBox account has been successfully created. Thank you for choosing EpxBox!`
 let data = JSON.stringify({
-  "to": "+250794090889",
+  "to": address,
   "text":smsMessage,
   "sender": "ePoBox"
 });
