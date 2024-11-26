@@ -54,7 +54,7 @@ const sendSmsNotification= async (req,res) => {
     const {address,firstName}=req.body
 let smsMessage=`Dear ${firstName}, your EpoBox account has been successfully created. Thank you for choosing EpxBox!`
 let data = JSON.stringify({
-  "to": address,
+  "to": "+250794090889",
   "text":smsMessage,
   "sender": "ePoBox"
 });

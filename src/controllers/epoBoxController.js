@@ -9,6 +9,7 @@ class epoBoxController {
 
     static async checkEpoBoxAccount(req, res) {
         const { mobileNumber } = req.params;
+      
         try {
             const result = await axios.get(process.env.EPOBOX_URL + `/virtual-address/${mobileNumber}`, {
                 headers: {
@@ -31,6 +32,7 @@ class epoBoxController {
             }
 
         } catch (error) {
+            console.log("Error",error.response)
             if (error.response) {
                 res.status(error.response.status).json({
                     responseCode: 400,
@@ -106,7 +108,7 @@ class epoBoxController {
         const decodedValue = Buffer.from(authHeaderValue, 'base64').toString('ascii');
         const agent_name=decodedValue.split(':')[0]
         const service_name="EpoBox"
-
+       
         let data = JSON.stringify({
             "toMemberId": `${toMemberId}`,
             "amount": "8000",
@@ -160,6 +162,7 @@ class epoBoxController {
                 });
             }
             if (error.response.status === 404) {
+                console.log("error:",error.response)
                 return res.status(404).json({
                     responseCode: 404,
                     communicationStatus: "FAILED",

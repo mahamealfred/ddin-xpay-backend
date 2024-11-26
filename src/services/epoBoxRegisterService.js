@@ -16,7 +16,8 @@ const createNewEpoBoxAccount = async (req, res, description, transactionId,agent
         addressType,
         postalCodeId,
         address,
-        nationalId
+        nationalId,
+        amount
 
     } = req.body;
     let data
@@ -62,12 +63,12 @@ const createNewEpoBoxAccount = async (req, res, description, transactionId,agent
         .then((response) => {
             // console.log(JSON.stringify(response.data));
             if (response.data.status == true) {
-                let transactionId = transactionId
-                 let thirdpart_status = response.data.status
+             
+                 let thirdpart_status = "True"
                 let status = "Complete"
                 let trxId=""
                 logsData(transactionId, thirdpart_status, description, amount, agent_name, status, service_name, trxId)
-               // smsNotification(req,res)
+                smsNotification(req,res)
                 onBoardClient(firstName,lastName, email, addressType, address, nationalId)
                 return res.status(201).json({
                     responseCode: 201,
@@ -91,8 +92,8 @@ const createNewEpoBoxAccount = async (req, res, description, transactionId,agent
 
         })
         .catch((error) => {
-            let transactionId = transactionId
-            let thirdpart_status = error.response.status
+            
+            let thirdpart_status = "False"
             let status = "Incomplete"
             let trxId=""
            logsData(transactionId, thirdpart_status, description, amount, agent_name, status, service_name, trxId)
