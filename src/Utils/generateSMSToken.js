@@ -4,16 +4,16 @@ const axios =require("axios");
 
 dotenv.config();
 
-const generateAccessToken = async(req,res)=>{
+const generateSMSToken = async(req,res)=>{
     let data = JSON.stringify({
-        "api_key": "fec6eb42-30e0-4868-ab6c-46dfa78718b4",
-        "api_secret": "74a0dd2d-ee5c-4067-aa81-fb5eb8400102"
+        "api_username": "B29C7CF4-CB27-4790-8489-5AD439F134A1",
+        "api_password": "BA243365-A19E-4165-BC96-33C25A7D2ACF"
       });
       
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://sb-api.efashe.com/rw/v2/auth',
+        url: 'https://messaging.fdibiz.com/api/v1/auth/',
         headers: { 
           'Content-Type': 'application/json'
         },
@@ -23,7 +23,7 @@ const generateAccessToken = async(req,res)=>{
     const accesstoken=await  axios.request(config)
       .then((response) => {
         
-        const token=JSON.stringify(response.data.data.accessToken)
+        const token=JSON.stringify(response.data.access_token)
         //console.log(JSON.stringify(response.data.data.accessToken));
         return token
        
@@ -39,4 +39,4 @@ const generateAccessToken = async(req,res)=>{
       return  accesstoken
 };
 
-module.exports= generateAccessToken
+module.exports= generateSMSToken
