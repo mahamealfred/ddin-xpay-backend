@@ -37,7 +37,7 @@ class singleSmsController{
       const response = await axios.request(config)
       if (response.status === 200){
        //call logs table
-       await singleSmsPaymentService.singleSmsByFdiPaymentService(req, res, response, amount, recipient, description, senderId, smsMessage,service_name,agent_name)
+       await singleSmsPaymentService.singleSmsByPindoPaymentService(req, res, response, amount, recipient, description, senderId, smsMessage,service_name,agent_name)
       }
     } catch (error) {
   

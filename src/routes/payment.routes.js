@@ -36,7 +36,7 @@ router.post('/bulk-airtime/payment',CheckAccountStatus,airtimeController.ddinBul
 router.post('/pindo-bulksms/payment',CheckAccountStatus,bulkSmsController.ddinPindoBulkSmsPayment);
 //SINGLE SMS
 router.post('/pd/single-sms',CheckAccountStatus,singleSmsController.ddinPindoSingleSmsPayment);
-router.post('/fd/single-sms',CheckAccountStatus,singleSmsController.ddinPindoSingleSmsPayment);
+router.post('/fd/single-sms',CheckAccountStatus,singleSmsController.ddinFdiSingleSmsPayment);
 //STARTIME 
 router.post('/startime/validate-vend',
 Startimeontroller.ValidateStartimeNumber
