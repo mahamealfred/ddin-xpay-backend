@@ -34,6 +34,7 @@ router.post('/bulk-airtime/payment',CheckAccountStatus,airtimeController.ddinBul
 
 //BULK SMS 
 router.post('/pindo-bulksms/payment',CheckAccountStatus,bulkSmsController.ddinPindoBulkSmsPayment);
+router.post('/pd/bulk-sms',CheckAccountStatus,bulkSmsController.ddinPindoBulkSmsPaymentForCorporate);
 //SINGLE SMS
 router.post('/pd/single-sms',CheckAccountStatus,singleSmsController.ddinPindoSingleSmsPayment);
 router.post('/fd/single-sms',CheckAccountStatus,singleSmsController.ddinFdiSingleSmsPayment);

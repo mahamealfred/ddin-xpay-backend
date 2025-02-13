@@ -12,10 +12,10 @@ class singleSmsController{
        const decodedValue = Buffer.from(authHeaderValue, 'base64').toString('ascii');
        const agent_name=decodedValue.split(':')[0]
        const service_name="Pindo Single SMS"
-       const description="The Pindo Single SMS service by FARANGA"
+      let description=`Bulk SMS Vending TX by:${agent_name},Total Recipient:1, and Total Paid amount:15`
     let data = JSON.stringify({
       "toMemberId": `${toMemberId}`,
-      "amount": `${amount}`,
+      "amount": '15',
       "transferTypeId": `${transferTypeId}`,
       "currencySymbol": currencySymbol,
       "description": description
@@ -81,7 +81,7 @@ class singleSmsController{
        const description="FDI Single SMS service"
     let data = JSON.stringify({
       "toMemberId": `${toMemberId}`,
-      "amount": `${amount}`,
+      "amount": '15',
       "transferTypeId": `${transferTypeId}`,
       "currencySymbol": currencySymbol,
       "description": description
