@@ -8,7 +8,7 @@ dotenv.config();
 class rraController{
 
   static async rraPayment(req, res) {
-    const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber,clientPhone,taxPayer,tin,agentCategory} = req.body;
+    const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber,clientPhone,taxPayer,tin,agentCategory,referenceNumber} = req.body;
     const authheader = req.headers.authorization;
     const authHeaderValue = authheader.split(' ')[1];
        const decodedValue = Buffer.from(authHeaderValue, 'base64').toString('ascii');
@@ -31,7 +31,7 @@ class rraController{
         {
       "internalName" : agentCategory==="Corporate"?"tax_document_id_v1":"tax_document_id",
       "fieldId" : agentCategory==="Corporate"?"59":"48",
-      "value" : phoneNumber
+      "value" : phoneNumber?phoneNumber:referenceNumber
         },
         {
       "internalName" : agentCategory==="Corporate"?"taxpayer_v1":"taxpayer",
@@ -71,7 +71,7 @@ class rraController{
     try {
       const response = await axios.request(config)
       if (response.status === 200){
-       await ddinRraPaymentService(req, res, response, amount, description, trxId,phoneNumber,clientPhone,service_name,agent_name)
+       await ddinRraPaymentService(req, res, response, amount, description, trxId,phoneNumber,clientPhone,service_name,agent_name,referenceNumber)
       }
     } catch (error) {
       

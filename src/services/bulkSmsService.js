@@ -11,7 +11,7 @@ dotenv.config();
 
 
 //best for bulk pindo bulk sms
-const bulkSmsPaymentService = async (req, res, response, amount, recipients, description, senderId, smsMessage,service_name,agent_name) => {
+const bulkSmsPaymentServiceAgent = async (req, res, response, amount, recipients, description, senderId, smsMessage,service_name,agent_name) => {
 
   let data = JSON.stringify({
     "sender": senderId,
@@ -56,6 +56,7 @@ const bulkSmsPaymentService = async (req, res, response, amount, recipients, des
     }
 
   } catch (error) {
+
     let transactionId=response.data.id
     let thirdpart_status=error.response.status
     
@@ -175,4 +176,4 @@ let amount=total_amount
 };
 
 
-module.exports = {bulkSmsPaymentService,bulkSmsPaymentServiceForCorporate}
+module.exports = {bulkSmsPaymentServiceAgent,bulkSmsPaymentServiceForCorporate}

@@ -14,6 +14,7 @@ class AirtimeController {
 
 
   static async  ddinAirtimePayment(req,res){
+ 
     const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber,clientPhone } = req.body;
     const authheader = req.headers.authorization;
     const authHeaderValue = authheader.split(' ')[1];
@@ -185,7 +186,7 @@ static async ddinBulkAirtimePayment(req, res) {
         if (error.response.status === 401) {
           errorMessage = "Username and Password are required for authentication";
         } else if (error.response.status === 400) {
-          console.log("error:",error.response)
+          // console.log("error:",error.response)
           errorMessage = "Invalid Username or Password";
         } else if (error.response.status === 404) {
           errorMessage = "Account Not Found";
@@ -310,6 +311,7 @@ return res.status(400).json({
 
  
   static async ValidatePhoneNumber(req, res) {
+   
     const accessToken = await generateAccessToken();
     const {customerAccountNumber} = req.body
 
@@ -344,7 +346,7 @@ return res.status(400).json({
         return res.status(200).json({
           responseCode: 200,
           communicationStatus: "SUCCESS",
-          responseDescription: "SUCCESS-EFASHE Customer Details",
+          responseDescription: "SUCCESS-DDIN Customer Details",
           data: {
             pdtId: response.data.data.pdtId,
             pdtName: response.data.data.pdtName,

@@ -1,4 +1,5 @@
 const express =require("express")
+const rateLimit = require("express-rate-limit");
 const rraController =require("../controllers/rraController.js");
 const electricityController =require("../controllers/electricityController.js");
 
@@ -10,6 +11,21 @@ const Startimeontroller = require("../controllers/startimeController.js");
 const singleSmsController = require("../controllers/singleSmsController.js");
 
 const router=express.Router();
+
+
+const paymentLimiter = rateLimit({
+    windowMs: 5 * 1000, // 1 second
+    max: 1, // 1 request per 5 second
+    keyGenerator: (req) => req.ip, // Use user ID if available, otherwise use IP
+    message: {
+      responseCode: 429,
+      communicationStatus: "FAILED",
+      responseDescription: "Too many requests. Please wait a moment before trying again.",
+    },
+  });
+  
+
+
 //RRA Payament
 router.post('/rra/validate-vend',
 rraController.ValidateRRAId
@@ -21,23 +37,23 @@ rraController.ValidateRRAId
 //       });
 // }
 );
-router.post('/rra/payment',CheckAccountStatus,rraController.rraPayment);
+router.post('/rra/payment',paymentLimiter,CheckAccountStatus,rraController.rraPayment);
 
 //ELECTRICITY Payament
 router.post('/electricity/validate-vend',electricityController.ValidateCustomerMeterNumber);
-router.post('/electricity/payment',CheckAccountStatus,electricityController.ddinElectricityPayment);
+router.post('/electricity/payment',paymentLimiter,CheckAccountStatus,electricityController.ddinElectricityPayment);
 
 //AIRTIME PAYMENT
-router.post('/airtime/validate-vend',airtimeController.ValidatePhoneNumber);
-router.post('/airtime/payment',CheckAccountStatus,airtimeController.ddinAirtimePayment);
-router.post('/bulk-airtime/payment',CheckAccountStatus,airtimeController.ddinBulkAirtimePayment);
+router.post('/airtime/validate-vend',paymentLimiter,airtimeController.ValidatePhoneNumber);
+router.post('/airtime/payment',paymentLimiter,CheckAccountStatus,airtimeController.ddinAirtimePayment);
+router.post('/bulk-airtime/payment',paymentLimiter,CheckAccountStatus,airtimeController.ddinBulkAirtimePayment);
 
 //BULK SMS 
-router.post('/pindo-bulksms/payment',CheckAccountStatus,bulkSmsController.ddinPindoBulkSmsPayment);
-router.post('/pd/bulk-sms',CheckAccountStatus,bulkSmsController.ddinPindoBulkSmsPaymentForCorporate);
+router.post('/pindo-bulksms/payment',paymentLimiter,CheckAccountStatus,bulkSmsController.ddinPindoBulkSmsPayment);
+router.post('/pd/bulk-sms',paymentLimiter,CheckAccountStatus,bulkSmsController.ddinPindoBulkSmsPaymentForCorporate);
 //SINGLE SMS
-router.post('/pd/single-sms',CheckAccountStatus,singleSmsController.ddinPindoSingleSmsPayment);
-router.post('/fd/single-sms',CheckAccountStatus,singleSmsController.ddinFdiSingleSmsPayment);
+router.post('/pd/single-sms',paymentLimiter,CheckAccountStatus,singleSmsController.ddinPindoSingleSmsPayment);
+router.post('/fd/single-sms',paymentLimiter,CheckAccountStatus,singleSmsController.ddinFdiSingleSmsPayment);
 //STARTIME 
 router.post('/startime/validate-vend',
 Startimeontroller.ValidateStartimeNumber
@@ -49,7 +65,7 @@ Startimeontroller.ValidateStartimeNumber
 //       });
 // }
 );
-router.post('/startime/payment',CheckAccountStatus,Startimeontroller.ddinStartimePayment);
+router.post('/startime/payment',paymentLimiter,CheckAccountStatus,Startimeontroller.ddinStartimePayment);
 
 //payament status
 router.get("/check-efashe-transaction/status",checkEfashePayment)

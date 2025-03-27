@@ -14,7 +14,7 @@ dotenv.config();
 class electricityController{
 //new methode
 static async ddinElectricityPaymentNewMethode(req,res){
-  const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber,clientPhone } = req.body;
+  const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber,clientPhone,meterNumber } = req.body;
     const authheader = req.headers.authorization;
     const authHeaderValue = authheader.split(' ')[1];
        const decodedValue = Buffer.from(authHeaderValue, 'base64').toString('ascii');
@@ -30,7 +30,7 @@ static async ddinElectricityPaymentNewMethode(req,res){
   }
   let data = JSON.stringify({
     trxId: trxId,
-    customerAccountNumber: phoneNumber,
+    customerAccountNumber: phoneNumber?phoneNumber:meterNumber,
     amount: amount,
     verticalId: "electricity",
     deliveryMethodId: "sms",
@@ -57,7 +57,7 @@ static async ddinElectricityPaymentNewMethode(req,res){
       let status = "Incomplete"
 
       // logsData(transactionId, thirdpart_status, description, amount, agent_name, status, service_name, trxId)
-      ddinElectricityPaymentServiceNewMethod(req,res,resp,amount,toMemberId,trxId,phoneNumber,clientPhone,transferTypeId,currencySymbol,description,agent_name,service_name)
+      ddinElectricityPaymentServiceNewMethod(req,res,resp,amount,toMemberId,trxId,phoneNumber?phoneNumber:meterNumber,clientPhone,transferTypeId,currencySymbol,description,agent_name,service_name)
       
     }
 
@@ -88,7 +88,7 @@ static async ddinElectricityPaymentNewMethode(req,res){
 
   //previous methode
 static async ddinElectricityPayment(req,res){
-  const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber,clientPhone  } = req.body;
+  const { amount, trxId,transferTypeId, toMemberId, description, currencySymbol, phoneNumber,clientPhone,meterNumber  } = req.body;
     const authheader = req.headers.authorization;
     const authHeaderValue = authheader.split(' ')[1];
        const decodedValue = Buffer.from(authHeaderValue, 'base64').toString('ascii');
@@ -104,7 +104,7 @@ static async ddinElectricityPayment(req,res){
       {
       "internalName" : "meterNumber",
       "fieldId" : "86",
-      "value" :phoneNumber 
+      "value" :phoneNumber?phoneNumber:meterNumber 
        },
       {
      "internalName" : "trans_id",
@@ -141,7 +141,7 @@ static async ddinElectricityPayment(req,res){
       const response = await axios.request(config)
       if (response.status === 200){
        //call logs table
-       await ddinElectricityPaymentService(req, res, response, amount, description, trxId,phoneNumber,service_name,agent_name)
+       await ddinElectricityPaymentService(req, res, response, amount, description, trxId,phoneNumber,service_name,agent_name,meterNumber)
       }
     } catch (error) {
       
@@ -212,7 +212,7 @@ static async ddinElectricityPayment(req,res){
               return res.status(200).json({
                   responseCode: 200,
                   communicationStatus:"SUCCESS",
-                  responseDescription: "Customer Detail",
+                  responseDescription: "SUCCESS-DDIN Customer Details",
                   data:{
                     pdtId: response.data.data.pdtId,
                     pdtName: response.data.data.pdtName,

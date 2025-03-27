@@ -131,7 +131,7 @@ const ddinElectricityPaymentServiceNewMethod = async (
 
 
 //previoys method
-const ddinElectricityPaymentService = async (req, res, response, amount, description, trxId, phoneNumber, service_name, agent_name) => {
+const ddinElectricityPaymentService = async (req, res, response, amount, description, trxId, phoneNumber, service_name, agent_name,meterNumber) => {
   const accessToken = await generateAccessToken();
   if (!accessToken) {
     return res.status(401).json({
@@ -143,7 +143,7 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
 
   let data = JSON.stringify({
     trxId: trxId,
-    customerAccountNumber: phoneNumber,
+    customerAccountNumber: phoneNumber?phoneNumber:meterNumber,
     amount: amount,
     verticalId: "electricity",
     deliveryMethodId: "sms",
@@ -175,9 +175,10 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
           let desc=description+""+responseData.data.data.spVendInfo.voucher;
           // Update the electricity table with the transactionId and description
           const updateResult = await updateElectricityTable(desc , id);
-          
+          console.log("resp:",meterNumber)
           // Check if the update was successful before returning the success response
           if (updateResult) {
+        
             return res.status(200).json({
               responseCode: 200,
               communicationStatus: "SUCCESS",
@@ -190,6 +191,7 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
               }
             });
           } else {
+            console.log("resp:",meterNumber,responseData.data.data)
             return res.status(400).json({
               responseCode: 400,
               communicationStatus: "FAILED",

@@ -12,12 +12,15 @@ class authController{
           },
           withCredentials: true,
             });
+          
             if(response.status===200){
+               
                 const data=await accountID(req,res,authheader)
+           
                      let agentFloatAccountId=""
                     let  agentInstantCommissionAccountId=""
                     let   agentDelayedCommissionAccountId=""
-                data.forEach(account => {
+                data?.forEach(account => {
                     if(account.account.type.name ==="Agent Delayed Commission A/C"){
                         agentDelayedCommissionAccountId=(account.account.id).toString()
                     }
@@ -40,7 +43,7 @@ class authController{
                 let sector=""
                 let agentCategory=""
                     //custome values
-                    response.data.customValues.forEach(item=>{
+                    response?.data?.customValues.forEach(item=>{
                         if(item.internalName === "mobilePhone"){
                             phone=item.value
                         }
@@ -76,7 +79,7 @@ class authController{
                     const seconds = String(currentDate.getSeconds()).padStart(2, '0');
                     
                     const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-            
+                  
                 // console.log("true response:",data)
                 return res.status(200).json({
                     responseCode: 200,
@@ -92,7 +95,7 @@ class authController{
                         image: null,
                         country,
                         nationalId,
-                        birthday: response.data.customValues[8].value,
+                       // birthday: response.data?.customValues[8].value?,
                         gender,
                         city: null,
                         province,
@@ -111,6 +114,7 @@ class authController{
                 
             
         } catch (error) {
+           
             if(error.response.status===401){
                 return res.status(401).json({
                     responseCode: 401,

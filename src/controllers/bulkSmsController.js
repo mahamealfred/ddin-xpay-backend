@@ -36,7 +36,7 @@ class bulkSmsController{
       const response = await axios.request(config)
       if (response.status === 200){
        //call logs table
-       await bulkSmsPaymentService(req, res, response, amount, recipients, description, senderId, smsMessage,service_name,agent_name)
+       await bulkSmsPaymentService.bulkSmsPaymentServiceAgent(req, res, response, amount, recipients, description, senderId, smsMessage,service_name,agent_name)
       }
     } catch (error) {
   
