@@ -25,7 +25,7 @@ const bulkSmsPaymentServiceAgent = async (req, res, response, amount, recipients
     url: 'https://api.pindo.io/v1/sms/bulk',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpZCI6Ijc1MSIsInJldm9rZWRfdG9rZW5fY291bnQiOjYsImlhdCI6MTcyODcyODM5MiwiZXhwIjoxODIzMzM2MzkyfQ.Q7qqV9fNGwdyCAtfz6aulK7YCKqwFMBwgq-V2hKrxwJJj5S0n6OOG8mTPBHdIggO994V3H3PLKZeI54R1QGysQ'
+      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4NTA4OTc1NTgsImlhdCI6MTc1NjIwMzE1OCwiaWQiOiI3NTEiLCJyZXZva2VkX3Rva2VuX2NvdW50Ijo3fQ.15LsZWJSl2hkHqumYkTKmBGM0_i_-6ttI1ZwMPSMGRWMt0fLVtPwt3bun_59kf2iqHnNR3-5gjju0swph0c9tA'
     },
     data: data
   };

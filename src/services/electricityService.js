@@ -9,12 +9,12 @@ const callPollEndpoint = require("../Utils/checkEfasheTransactionStatus.js");
 dotenv.config();
 //new methode
 const ddinElectricityPaymentServiceNewMethod = async (
-  req, res, resp, amount, toMemberId, trxId, phoneNumber,clientPhone, transferTypeId, currencySymbol, description, agent_name, service_name
+  req, res, resp, amount, toMemberId, trxId, phoneNumber, clientPhone, transferTypeId, currencySymbol, description, agent_name, service_name
 ) => {
   const authheader = req.headers.authorization;
   let status = "Incomplete";
   while (true) {
-    const responseData = await callPollEndpoint(resp,trxId);
+    const responseData = await callPollEndpoint(resp, trxId);
     let thirdpart_status = responseData.data.data.trxStatusId;
     if (thirdpart_status === "successful") {
       let data = JSON.stringify({
@@ -22,29 +22,29 @@ const ddinElectricityPaymentServiceNewMethod = async (
         "amount": `${amount}`,
         "transferTypeId": `${transferTypeId}`,
         "currencySymbol": currencySymbol,
-        "description": description+""+responseData.data.data.spVendInfo.voucher,
+        "description": description + "" + responseData.data.data.spVendInfo.voucher,
         "customValues": [
-        {
-        "internalName" : "meterNumber",
-        "fieldId" : "86",
-        "value" :phoneNumber 
-         },
-        {
-       "internalName" : "trans_id",
-       "fieldId" : "85",
-       "value" : trxId
-        },
-        {
-          "internalName" : "net_amount",
-          "fieldId" : "87",
-          "value" : amount
-        },
-        {
-          "internalName" : "clientphone",
-          "fieldId" : "90",
-          "value" : clientPhone
-        }
-       ]
+          {
+            "internalName": "meterNumber",
+            "fieldId": "86",
+            "value": phoneNumber
+          },
+          {
+            "internalName": "trans_id",
+            "fieldId": "85",
+            "value": trxId
+          },
+          {
+            "internalName": "net_amount",
+            "fieldId": "87",
+            "value": amount
+          },
+          {
+            "internalName": "clientphone",
+            "fieldId": "90",
+            "value": clientPhone
+          }
+        ]
 
       });
 
@@ -111,9 +111,9 @@ const ddinElectricityPaymentServiceNewMethod = async (
     } else if (thirdpart_status !== "pending") {
       // Handle other non-pending statuses
       status = "Incomplete";
-      transactionId=""
+      transactionId = ""
       logsData(transactionId, thirdpart_status, description, amount, agent_name, status, service_name, trxId)
-     // Chargeback(transactionId);
+      // Chargeback(transactionId);
       return res.status(400).json({
         responseCode: 400,
         communicationStatus: "Failed",
@@ -131,7 +131,7 @@ const ddinElectricityPaymentServiceNewMethod = async (
 
 
 //previoys method
-const ddinElectricityPaymentService = async (req, res, response, amount, description, trxId, phoneNumber, service_name, agent_name,meterNumber) => {
+const ddinElectricityPaymentService = async (req, res, response, amount, description, trxId, phoneNumber, service_name, agent_name, meterNumber) => {
   const accessToken = await generateAccessToken();
   if (!accessToken) {
     return res.status(401).json({
@@ -143,7 +143,7 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
 
   let data = JSON.stringify({
     trxId: trxId,
-    customerAccountNumber: phoneNumber?phoneNumber:meterNumber,
+    customerAccountNumber: phoneNumber ? phoneNumber : meterNumber,
     amount: amount,
     verticalId: "electricity",
     deliveryMethodId: "sms",
@@ -164,7 +164,7 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
     const resp = await axios.request(config);
     if (resp.status === 202) {
       let transactionId = response.data.id;
-      let id= response.data.id;
+      let id = response.data.id;
       let status = "Incomplete";
       while (true) {
         const responseData = await callPollEndpoint(resp, trxId);
@@ -172,13 +172,13 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
         if (thirdpart_status === "successful") {
           status = "Complete";
           logsData(transactionId, thirdpart_status, description, amount, agent_name, status, service_name, trxId);
-          let desc=description+""+responseData.data.data.spVendInfo.voucher;
+          let desc = description + "" + responseData.data.data.spVendInfo.voucher;
           // Update the electricity table with the transactionId and description
-          const updateResult = await updateElectricityTable(desc , id);
-          console.log("resp:",meterNumber)
+          const updateResult = await updateElectricityTable(desc, id);
+          //console.log("resp:",meterNumber)
           // Check if the update was successful before returning the success response
           if (updateResult) {
-        
+
             return res.status(200).json({
               responseCode: 200,
               communicationStatus: "SUCCESS",
@@ -191,7 +191,7 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
               }
             });
           } else {
-            console.log("resp:",meterNumber,responseData.data.data)
+            console.log("resp:", meterNumber, responseData.data.data)
             return res.status(400).json({
               responseCode: 400,
               communicationStatus: "FAILED",
@@ -208,7 +208,7 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
             responseDescription: "Dear client, We're unable to complete your transaction right now. Please try again later"
           });
         }
-        
+
         await delay(3000); // Delay before the next polling attempt
       }
     }
@@ -218,29 +218,44 @@ const ddinElectricityPaymentService = async (req, res, response, amount, descrip
     let status = "Incomplete";
     logsData(transactionId, thirdpart_status, description, amount, agent_name, status, service_name, trxId);
 
-    if (error.response.status === 400) {
+    if (error.response && error.response.status === 400) {
+      Chargeback(transactionId);
       return res.status(400).json({
         responseCode: 400,
         communicationStatus: "FAILED",
         responseDescription: error.response.data.msg
       });
     }
-
+    if (error.response && error.response.status === 422) {
+      Chargeback(transactionId);
+      return res.status(400).json({
+        responseCode: 400,
+        communicationStatus: "FAILED",
+        responseDescription: error.response.data.msg
+      });
+    }
+    if (!error.response) {
+      return res.status(404).json({
+        responseCode: 404,
+        communicationStatus: "FAILED",
+        responseDescription: "Dear client, Your transaction has been processed; please get in touch with DDIN Support for follow-up."
+      });
+    }
     return res.status(500).json({
       responseCode: 500,
       communicationStatus: "FAILED",
-      error: error.response.data.msg
+      error: "Dear client, we're unable to complete your transaction right now. Please try again later.",
     });
   }
 };
 
 // Helper function to update the electricity table
-const updateElectricityTable = async ( description, id) => {
+const updateElectricityTable = async (description, id) => {
   // Replace with your database connection logic
   //const query = `UPDATE electricity SET transactionId = ?, description = ? WHERE trxId = ?`;
-  const query='UPDATE transfers SET description= ? WHERE id= ?';
+  const query = 'UPDATE transfers SET description= ? WHERE id= ?';
   try {
-    const [result] = await dbConnect.query(query, [ description, id]);
+    const [result] = await dbConnect.query(query, [description, id]);
     return result.affectedRows > 0; // Return true if the update was successful
   } catch (error) {
     console.error("Failed to update electricity table:", error);
